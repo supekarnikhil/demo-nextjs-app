@@ -4,7 +4,7 @@ const stats = [
     { id: 3, name: 'New users annually', value: '46,000' },
   ]
   
-  export default function Example() {
+  export default function StatSection() {
     return (
       <div className="bg-white py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
