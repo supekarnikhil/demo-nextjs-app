@@ -1,3 +1,4 @@
+import { GetServerSidePropsContext } from "next/types";
 import dynamic from "next/dynamic";
 
 const HeroSection = dynamic(() => import("@/components/HeroSection"));
@@ -6,29 +7,33 @@ const PricingSection = dynamic(() => import("@/components/PricingSection"));
 const StatSection = dynamic(() => import("@/components/StatSection"));
 const TestimonialSection = dynamic(() => import("@/components/TestimonialSection"));
 
-const getSectionsComponent = ({ id, __component, ...rest }:any) => {
-    let Sections;
+type Props = {
+    sections: any;
+}
+
+const getSectionsComponent = ({ id, __component, ...rest }: any) => {
+    let SectionsComponent;
 
     if (__component === "sections.hero"){
-            Sections = HeroSection;
+            SectionsComponent = HeroSection;
     }
     if (__component === "sections.pricing"){
-            Sections = PricingSection;
+            SectionsComponent = PricingSection;
     }
     if (__component === "sections.stats"){
-            Sections = StatSection;
+            SectionsComponent = StatSection;
     }
     if (__component === "sections.cta"){
-            Sections = CtaSection;
+            SectionsComponent = CtaSection;
     }
     if (__component === "sections.testimonials"){
-            Sections = TestimonialSection;
+            SectionsComponent = TestimonialSection;
     }
   
-    return Sections ? <Sections key={`index-${id}`} {...rest} /> : null;
+    return SectionsComponent ? <SectionsComponent key={`index-${__component}-${id}`} {...rest} /> : null;
   };
 
-export default function Shop({sections}: any) {
+export default function Shop({sections}: Props) {
     return (
         <>
             {sections.map(getSectionsComponent)}
@@ -36,7 +41,7 @@ export default function Shop({sections}: any) {
     );
 }
 
-export const getServerSideProps = async (ctx:any) => {
+export const getServerSideProps = async (ctx:GetServerSidePropsContext) => {
     const slug = ctx.query.slug;
     const res = await fetch(
         `${process.env.CMS_BASE_URL}/api/shops?filters[slug]=${slug}&populate=deep`,
@@ -51,8 +56,16 @@ export const getServerSideProps = async (ctx:any) => {
     if (!res.ok) {
         throw new Error('Failed to fetch data');
     }
+
     
     const result = await res.json();
+    
+    if (result.data.length === 0) {
+        return {
+            notFound: true
+        }
+    }
+
     return {
         props: {
             sections: result.data[0].attributes.sections
