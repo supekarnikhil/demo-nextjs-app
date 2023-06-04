@@ -17,16 +17,16 @@ const getSectionsComponent = ({ id, __component, ...rest }: any) => {
     if (__component === "sections.hero"){
             SectionsComponent = HeroSection;
     }
-    if (__component === "sections.pricing"){
+    else if (__component === "sections.pricing"){
             SectionsComponent = PricingSection;
     }
-    if (__component === "sections.stats"){
+    else if (__component === "sections.stats"){
             SectionsComponent = StatSection;
     }
-    if (__component === "sections.cta"){
+    else if (__component === "sections.cta"){
             SectionsComponent = CtaSection;
     }
-    if (__component === "sections.testimonials"){
+    else if (__component === "sections.testimonials"){
             SectionsComponent = TestimonialSection;
     }
   
